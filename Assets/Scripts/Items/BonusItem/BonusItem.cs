@@ -19,7 +19,7 @@ public class BonusItem : Item
             if (IsEnabled)
             {
                 ActivateBonus(player);
-                transform.Translate(-Vector3.up*2); // Костыль исчезновения объекта. Тут создать пул.
+                transform.Translate(-Vector3.up*2); // Костыль исчезновения объекта. Будет возвращаться в пул.
             }
             else
             {

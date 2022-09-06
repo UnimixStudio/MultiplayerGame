@@ -1,18 +1,10 @@
-using System;
 using System.Collections.Generic;
 
 public class Inventory
 {
     public readonly int Capacity = 4;
 
-    public Action<Item> ItemTaken;
-
     private readonly List<Item> _items = new();
-
-    public Inventory()
-    {
-        ItemTaken += Add;
-    }
 
     public void Add(Item item)
     {

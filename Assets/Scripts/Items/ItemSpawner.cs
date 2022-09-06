@@ -1,5 +1,4 @@
 using UnityEngine;
-
 public class ItemSpawner : MonoBehaviour
 {
     [SerializeField] private Player _player;

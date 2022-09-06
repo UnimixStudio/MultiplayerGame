@@ -90,7 +90,7 @@ public class Player : MonoBehaviour
 
     public void Take(Item item)
     {
-        _inventory.ItemTaken?.Invoke(item);
+        item.Collected?.Invoke(item);
 
         Destroy(item.gameObject);
         print("Add an item in inventory");
