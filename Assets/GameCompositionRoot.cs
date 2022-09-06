@@ -10,6 +10,9 @@ public class GameCompositionRoot : MonoBehaviour
     private void Awake()
     {
         var inventory = new Inventory();
+
+        inventory.ItemTaken += _inventoryUI.Add;
+
         _player.Initialize(inventory);
         _inventoryUI.Initialize(inventory);
     }

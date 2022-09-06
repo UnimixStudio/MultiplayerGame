@@ -4,23 +4,19 @@ using UnityEngine;
 
 public class InventoryUI : MonoBehaviour
 {
-    private Inventory _inventory;
+    [SerializeField] private GameObject _inventorySlotPrefab;
 
+    private Inventory _inventory;
     private List<InventorySlot> _inventorySlotList;
 
-    private void Awake()
+    private void Start()
     {
+        for(int i = 0; i < _inventory.Capacity; i++)
+        {
+            var slot = Instantiate(_inventorySlotPrefab);
+            slot.transform.SetParent(transform);
+        }
         _inventorySlotList = GetComponentsInChildren<InventorySlot>().ToList();
-    }
-
-    private void OnEnable()
-    {
-        _inventory.ItemTaken += Add;
-    }
-
-    private void OnDisable()
-    {
-        _inventory.ItemTaken -= Add;
     }
 
     public void Add(Item item)
