@@ -1,29 +1,32 @@
+using System;
 using System.Collections.Generic;
 
 public class Inventory
 {
-    private readonly int _capacity = 5;
-    private List<Item> _items = new();
-   
+    public readonly int Capacity = 4;
+
+    public Action<Item> ItemTaken;
+
+    private readonly List<Item> _items = new();
+
+    public Inventory()
+    {
+        ItemTaken += Add;
+    }
+
     public void Add(Item item)
     {
-        if (!IsFull())
-        {
-            _items.Add(item);
-        }   
+        _items.Add(item);
     }
 
     public void Remove(Item item)
     {
-        if (!IsEmpty())
-        {
-            _items.Remove(item);
-        }  
+        _items.Remove(item);
     }
 
     public bool IsFull()
     {
-        return _capacity == _items.Count;   
+        return Capacity == _items.Count;   
     }
 
     public bool IsEmpty()

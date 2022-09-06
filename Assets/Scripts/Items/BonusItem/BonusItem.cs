@@ -23,7 +23,7 @@ public class BonusItem : Item
             }
             else
             {
-                player.Take(this);
+                player.TryTakeItem(this);
             }
         }
         else if (IsEnabled)

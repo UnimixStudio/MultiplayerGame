@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     public event Action<Item> ItemDropped;
     public event Action<BonusItem> ActivatedItemDropped;
 
-    private Inventory _inventory = new();
+    private Inventory _inventory;
 
     protected CharacterController characterController;
 
@@ -34,7 +34,6 @@ public class Player : MonoBehaviour
     {
         _speed = 2;
     }
-
     void Update()
     {
         var horizontal = Input.GetAxis("Horizontal");
@@ -45,13 +44,24 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Q))
         {
             TryDropItem();
+
+            // !!!
+            //_inventoryUI.Remove();
         }
 
         if (Input.GetKeyDown(KeyCode.E))
         {
             if (_inventory.IsEmpty()) return;
             TryActivateBonus((BonusItem)_inventory.Pop());
+
+            // !!!
+            //_inventoryUI.Remove();
         }
+    }
+
+    public void Initialize(Inventory inventory)
+    {
+        _inventory = inventory;
     }
 
     private void TryActivateBonus(BonusItem item)
@@ -72,10 +82,18 @@ public class Player : MonoBehaviour
         ItemDropped?.Invoke(_inventory.Pop());
     }
 
+    public void TryTakeItem(Item item)
+    {
+        if (_inventory.IsFull()) return;
+        Take(item);
+    }
+
     public void Take(Item item)
     {
-        _inventory.Add(item);
+        _inventory.ItemTaken?.Invoke(item);
+
         Destroy(item.gameObject);
         print("Add an item in inventory");
     }
+
 }
