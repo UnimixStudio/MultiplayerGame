@@ -1,11 +1,22 @@
-public class ItemCollector
+public class ItemCollector : ISubscribable
 {
-    public ItemCollector(Item[] items, Inventory inventory, InventoryUI inventoryUI)
+    private readonly Item[] _items;
+    private readonly Inventory _inventory;
+
+    public ItemCollector(Item[] items, Inventory inventory)
     {
-        foreach (var item in items)
-        {
-            item.Collected += inventory.Add;
-            item.Collected += inventoryUI.Add;
-        }
+        _items = items;
+        _inventory = inventory;
+    }
+
+    public void Subscribe()
+    {
+        foreach (Item item in _items) 
+            item.Collected += _inventory.Add;
+    }
+    public void UnSubscribe()
+    {
+        foreach (Item item in _items) 
+            item.Collected -= _inventory.Add;
     }
 }

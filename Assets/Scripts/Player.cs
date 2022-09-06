@@ -4,42 +4,39 @@ using UnityEngine;
 [RequireComponent(typeof(CharacterController))]
 public class Player : MonoBehaviour
 {
+    private const string HORIZONTAL = "Horizontal";
+    private const string VERTICAL = "Vertical";
+    
     [SerializeField] private float _speed;
 
-    public float Speed
-    {
-        get
-        {
-            return _speed; 
-        }
-        set 
-        {
-            _speed = value; 
-        }
-    }
+    public float Speed { get => _speed; set => _speed = value; }
 
-    public event Action<Item> ItemDropped;
+    public event Action<IItem> ItemDropped;
     public event Action<BonusItem> ActivatedItemDropped;
 
     private Inventory _inventory;
 
-    protected CharacterController characterController;
+    protected CharacterController CharacterController;
 
     private void Awake()
     {
-        characterController = GetComponent<CharacterController>();
+        CharacterController = GetComponent<CharacterController>();
     }
 
     private void Start()
     {
         _speed = 2;
     }
-    void Update()
-    {
-        var horizontal = Input.GetAxis("Horizontal");
-        var vertical = Input.GetAxis("Vertical");
 
-        characterController.SimpleMove((Vector3.forward*vertical+Vector3.right*horizontal)*_speed);
+    private void Update()
+    {
+        Vector3 direction = 
+            Vector3.forward * Vertical + 
+            Vector3.right * Horizontal;
+        
+        direction.Normalize();
+        
+        CharacterController.SimpleMove(direction * _speed);
 
         if (Input.GetKeyDown(KeyCode.Q))
         {
@@ -51,13 +48,19 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.E))
         {
-            if (_inventory.IsEmpty()) return;
+            if (_inventory.IsEmpty()) 
+                return;
+            
             TryActivateBonus((BonusItem)_inventory.Pop());
 
             // !!!
             //_inventoryUI.Remove();
         }
     }
+
+    private static float Vertical => Input.GetAxis(VERTICAL);
+
+    private static float Horizontal => Input.GetAxis(HORIZONTAL);
 
     public void Initialize(Inventory inventory)
     {
@@ -79,12 +82,14 @@ public class Player : MonoBehaviour
             print("Inventory is empty");
             return;
         }
+
         ItemDropped?.Invoke(_inventory.Pop());
     }
 
     public void TryTakeItem(Item item)
     {
-        if (_inventory.IsFull()) return;
+        if (_inventory.IsFull()) 
+            return;
         Take(item);
     }
 
@@ -93,7 +98,5 @@ public class Player : MonoBehaviour
         item.Collected?.Invoke(item);
 
         Destroy(item.gameObject);
-        print("Add an item in inventory");
     }
-
 }

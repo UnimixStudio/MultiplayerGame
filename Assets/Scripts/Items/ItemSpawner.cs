@@ -16,16 +16,21 @@ public class ItemSpawner : MonoBehaviour
         _player.ActivatedItemDropped -= OnActivatedDrop;
     }
 
-    private void OnDrop(Item item)
+    private void OnDrop(IItem item)
     {
-        Instantiate(_factory.Create(item), _player.transform.position+new Vector3(2, 0, 0), Quaternion.identity);
+        Vector3 position = _player.transform.position + Vector3.right * 2f;
+        
+        GameObject original = _factory.Create(item);
+        
+        Instantiate(original, position, Quaternion.identity);
     }
 
     private void OnActivatedDrop(BonusItem item)
     {
-        var activatedItem = Instantiate(_factory.Create(item), _player.transform.position + new Vector3(1, 0, 0), Quaternion.identity);
-      
-        activatedItem.GetComponent<Rigidbody>().velocity = new Vector3(1, 0, 0) * 6f;
-        activatedItem.GetComponent<BonusItem>().SwitchState();
+        GameObject original = _factory.Create(item);
+        Vector3 position = _player.transform.position + Vector3.right;
+        GameObject activatedItem = Instantiate(original, position, Quaternion.identity);
+        
+        activatedItem.GetComponent<BonusItem>().Trow(Vector3.right * 6f);
     }
 }

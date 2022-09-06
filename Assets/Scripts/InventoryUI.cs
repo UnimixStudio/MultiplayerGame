@@ -5,15 +5,17 @@ using UnityEngine.UI;
 
 [RequireComponent(typeof(RectTransform))]
 [RequireComponent(typeof(GridLayout))]
-public class InventoryUI : MonoBehaviour
+public class InventoryUI : MonoBehaviour, ISubscribable
 {
-    [SerializeField] private GameObject _inventorySlotPrefab;
+    [SerializeField] private InventorySlot _inventorySlotPrefab;
+
+    private readonly List<InventorySlot> _slots = new();
 
     private Inventory _inventory;
     private List<InventorySlot> _inventorySlotList;
+    private GridLayoutGroup _layoutGroup;
 
     private RectTransform _rectTransform;
-    private GridLayoutGroup _layoutGroup;
 
     private void Awake()
     {
@@ -24,15 +26,32 @@ public class InventoryUI : MonoBehaviour
     private void Start()
     {
         RenderInventorySlots();
-        _inventorySlotList = GetComponentsInChildren<InventorySlot>().ToList();
+        _inventorySlotList = GetComponentsInChildren<InventorySlot>()
+            .ToList();
         RenderInventoryPanel();
     }
 
-    public void Add(Item item)
+    public void Subscribe()
     {
-        var slot = FindFirstUnusedSlot();
-        slot.Add(item);
-        slot.SetState(InventorySlot.States.Used);
+        _inventory.Changed += UpdateView;
+    }
+
+    public void UnSubscribe()
+    {
+        _inventory.Changed -= UpdateView;
+    }
+
+    public void Initialize(Inventory inventory)
+    {
+        _inventory = inventory;
+    }
+
+    public void Add(IItem item)
+    {
+        InventorySlot slot = FindFirstUnusedSlot();
+        Debug.Log("slot = " + slot, slot);
+
+        slot.Set(item);
     }
 
     // !!!
@@ -43,24 +62,38 @@ public class InventoryUI : MonoBehaviour
     //    slot.Remove();
     //}
 
-    public void Initialize(Inventory inventory)
-    {
-        _inventory = inventory;
-    }
-
     private InventorySlot FindFirstUnusedSlot() => _inventorySlotList.FirstOrDefault(item => item.IsUnused);
 
     private void RenderInventoryPanel()
     {
-        _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, _layoutGroup.cellSize.x * _inventorySlotList.Count);
-        _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, _layoutGroup.cellSize.y);
+        float sizeX = _layoutGroup.cellSize.x * _inventorySlotList.Count;
+        float sizeY = _layoutGroup.cellSize.y;
+
+        _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, sizeX);
+        _rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, sizeY);
     }
+
     private void RenderInventorySlots()
     {
-        for (int i = 0; i < _inventory.Capacity; i++)
+        for (var i = 0; i < _inventory.Capacity; i++)
         {
-            var slot = Instantiate(_inventorySlotPrefab);
-            slot.transform.SetParent(transform);
+            InventorySlot slot = Instantiate(_inventorySlotPrefab, transform, true);
+            _slots.Add(slot);
+        }
+    }
+
+    private void UpdateView()
+    {
+        IReadOnlyList<IItem> items = _inventory.Items;
+        
+        for (var i = 0; i < _slots.Count; i++)
+        {
+            InventorySlot slot = _slots[i];
+
+            if (i >= items.Count)
+                slot.Clear();
+            else
+                slot.Set(items[i]);
         }
     }
 }

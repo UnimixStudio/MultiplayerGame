@@ -21,14 +21,16 @@ public class InventorySlot : MonoBehaviour
         _state = state;
     }
 
-    public void Add(IItem item)
+    public void Set(IItem item)
     {
         _image.sprite = item.ItemSprite;
+        SetState(States.Used);
     }
 
     // !!!
-    public void Remove()
+    public void Clear()
     {
         _image.sprite = null;
+        SetState(States.Unused);
     }
 }

@@ -1,16 +1,15 @@
 using UnityEngine;
 
-public class BonusItem : Item
+public abstract class BonusItem : Item
 {
+    [SerializeField] private Rigidbody _rigidbody;
+
+    private void OnValidate() => _rigidbody ??= GetComponent<Rigidbody>();
+
+    private States _state = States.Disabled;
+
     public bool IsEnabled => _state == States.Enabled;
     public bool IsDisabled => _state == States.Disabled;
-
-    private enum States
-    {
-        Disabled,
-        Enabled
-    }
-    private States _state = States.Disabled;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -19,7 +18,7 @@ public class BonusItem : Item
             if (IsEnabled)
             {
                 ActivateBonus(player);
-                transform.Translate(-Vector3.up*2); // Костыль исчезновения объекта. Будет возвращаться в пул.
+                transform.Translate(-Vector3.up * 2); // ??????? ???????????? ???????. ????? ???????????? ? ???.
             }
             else
             {
@@ -32,10 +31,22 @@ public class BonusItem : Item
         }
     }
 
-    public void SwitchState()
+    public void Trow(Vector3 direction)
     {
-        _state = IsEnabled ? States.Disabled : States.Enabled;
+        _rigidbody.velocity = direction;
+        SwitchState();
     }
 
-    public virtual void ActivateBonus(Player player) { }
+    public void SwitchState() => 
+        _state = IsEnabled 
+            ? States.Disabled 
+            : States.Enabled;
+
+    public abstract void ActivateBonus(Player player);
+
+    private enum States
+    {
+        Disabled,
+        Enabled
+    }
 }

@@ -13,7 +13,7 @@ public class SamplePlayer : Player
 
     void Update()
     {
-        characterController.Move(Vector3.forward * _direction * Speed);
+        CharacterController.Move(Vector3.forward * _direction * Speed);
         if (Mathf.Abs(_startPoint.z - transform.position.z) >= 2f)
         {
             _direction *= -1;

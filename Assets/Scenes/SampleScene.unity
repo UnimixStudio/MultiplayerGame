@@ -2751,7 +2751,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 97199ff3a03fb5943a66cc4726ad3e7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventorySlotPrefab: {fileID: 833902390461578056, guid: 03840b3bade4a6246a2b2db03c19ae43, type: 3}
+  _inventorySlotPrefab: {fileID: 833902390461578060, guid: 03840b3bade4a6246a2b2db03c19ae43, type: 3}
 --- !u!1 &1491826494
 GameObject:
   m_ObjectHideFlags: 0
@@ -3278,7 +3278,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh23504
+  m_Name: pb_Mesh35740
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
@@ -3466,6 +3466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f231c4fb786f3946a6b90b886c48677, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SendPointerHoverToParent: 1
   m_HorizontalAxis: Horizontal
   m_VerticalAxis: Vertical
   m_SubmitButton: Submit
@@ -4013,7 +4014,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh23466
+  m_Name: pb_Mesh35710
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2

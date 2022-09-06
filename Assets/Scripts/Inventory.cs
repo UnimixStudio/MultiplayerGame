@@ -1,40 +1,43 @@
+using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Object = UnityEngine.Object;
 
 public class Inventory
 {
+    private readonly List<IItem> _items = new();
     public readonly int Capacity = 4;
+    public IReadOnlyList<IItem> Items => _items;
 
-    private readonly List<Item> _items = new();
+    public event Action Changed;
 
-    public void Add(Item item)
+    public void Add(IItem item)
     {
         _items.Add(item);
+        Changed?.Invoke();
+        Debug.Log($"Add an item {item}in inventory", item as Object);
     }
 
     public void Remove(Item item)
     {
         _items.Remove(item);
+        Changed?.Invoke();
     }
 
-    public bool IsFull()
-    {
-        return Capacity == _items.Count;   
-    }
+    public bool IsFull() => Capacity == Items.Count;
 
-    public bool IsEmpty()
-    {
-        return _items.Count == 0;
-    }
+    public bool IsEmpty() => Items.Count == 0;
 
-    public Item Pop()
+    public IItem Pop()
     {
-        var lastItem = _items[^1];
-        _items.RemoveAt(_items.Count - 1);
+        IItem lastItem = _items[^1];
+
+        _items.RemoveAt(Items.Count - 1);
+
+        Changed?.Invoke();
+
         return lastItem;
     }
 
-    public Item Get(int index)
-    {
-        return _items[index];
-    }
+    public IItem Get(int index) => _items[index];
 }
